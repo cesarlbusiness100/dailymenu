@@ -3,48 +3,39 @@ import { UtensilsCrossed } from "lucide-react";
 const menuItems = [
   {
     name: "Tequeños",
-    description: "Venezuelan cheese sticks",
-    emoji: "🧀",
+    description: "Traditional Venezuelan cheese sticks, golden-fried to perfection",
   },
   {
     name: "Empanadas",
-    description: "2 options: beef and cheese",
-    emoji: "🥟",
+    description: "Savory stuffed pastries — choice of seasoned beef or melted cheese",
   },
   {
     name: "Milkshakes",
-    description: "Oreo, chocolate, strawberry, frappe, vanilla",
-    emoji: "🥤",
+    description: "Creamy blended shakes — Oreo, chocolate, strawberry, frappe, or vanilla",
   },
   {
     name: "Chick-fil-A Items",
-    description: "Nuggets, sandwich, mac and cheese (rotating)",
-    emoji: "🍗",
+    description: "Rotating selection — nuggets, chicken sandwich, or mac and cheese",
   },
   {
     name: "Açaí Bowls",
-    description: "Customizable on request",
-    emoji: "🫐",
+    description: "Fresh açaí blend with customizable toppings upon request",
   },
   {
     name: "Pan de Bono",
-    description: "Colombian cheese bread",
-    emoji: "🍞",
+    description: "Authentic Colombian cheese bread, warm and freshly baked",
   },
   {
     name: "Boba Tea",
-    description: "Peach, mango, passionfruit, raspberry",
-    emoji: "🧋",
+    description: "Refreshing fruit tea with tapioca — peach, mango, passionfruit, or raspberry",
   },
   {
     name: "Lattes & Coffee",
-    description: "Caramel, mocha, vanilla options",
-    emoji: "☕",
+    description: "Espresso-based beverages — caramel, mocha, or vanilla flavors",
   },
   {
     name: "Fireman Derek's Ice Cream",
-    description: "Chocolate and birthday cake cups",
-    emoji: "🍨",
+    description: "Premium ice cream cups — chocolate or birthday cake flavors",
   },
 ];
 
@@ -63,13 +54,8 @@ const FullMenu = () => {
               key={item.name}
               className="bg-card rounded-lg p-5 shadow-sm border border-border hover:shadow-md transition-all hover:-translate-y-0.5"
             >
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">{item.emoji}</span>
-                <div>
-                  <h3 className="font-semibold text-primary">{item.name}</h3>
-                  <p className="text-muted-foreground text-sm mt-1">{item.description}</p>
-                </div>
-              </div>
+              <h3 className="font-semibold text-primary">{item.name}</h3>
+              <p className="text-muted-foreground text-sm mt-1 leading-relaxed">{item.description}</p>
             </div>
           ))}
         </div>
