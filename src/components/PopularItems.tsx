@@ -1,9 +1,9 @@
 import { Flame } from "lucide-react";
 
 const popularItems = [
-  { name: "Tequeños", emoji: "🧀" },
-  { name: "Empanadas", emoji: "🥟" },
-  { name: "Milkshakes", emoji: "🥤" },
+  { name: "Tequeños", description: "Crispy Venezuelan cheese sticks" },
+  { name: "Empanadas", description: "Handcrafted stuffed pastries" },
+  { name: "Milkshakes", description: "Premium blended shakes" },
 ];
 
 const PopularItems = () => {
@@ -18,14 +18,14 @@ const PopularItems = () => {
           These items are our highest-demand products and sell out quickly.
         </p>
         
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {popularItems.map((item) => (
             <div
               key={item.name}
-              className="bg-card rounded-lg p-4 text-center shadow-sm border border-border hover:shadow-md transition-shadow"
+              className="bg-card rounded-lg p-5 shadow-sm border border-border hover:shadow-md transition-shadow"
             >
-              <span className="text-3xl mb-2 block">{item.emoji}</span>
-              <span className="font-medium text-primary text-sm md:text-base">{item.name}</span>
+              <h3 className="font-semibold text-primary">{item.name}</h3>
+              <p className="text-muted-foreground text-sm mt-1">{item.description}</p>
             </div>
           ))}
         </div>
