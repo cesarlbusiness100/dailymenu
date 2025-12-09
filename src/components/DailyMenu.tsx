@@ -1,18 +1,42 @@
-import { Calendar, CheckCircle2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Calendar, CheckCircle2, XCircle } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
-const todayItems = [
-  { name: "Tequeños", available: true },
-  { name: "Chick-fil-A Nuggets", available: true },
-  { name: "Oreo Milkshake", available: true },
-  { name: "Mango Boba Tea", available: true },
-];
+interface MenuItem {
+  id: string;
+  name: string;
+  available: boolean;
+}
 
 const DailyMenu = () => {
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const today = new Date().toLocaleDateString('en-US', { 
     weekday: 'long', 
     month: 'long', 
     day: 'numeric' 
   });
+
+  useEffect(() => {
+    const fetchMenuItems = async () => {
+      const { data, error } = await supabase
+        .from('daily_menu_items')
+        .select('id, name, available')
+        .order('display_order', { ascending: true });
+
+      if (error) {
+        console.error('Error fetching menu items:', error);
+      } else {
+        setMenuItems(data || []);
+      }
+      setIsLoading(false);
+    };
+
+    fetchMenuItems();
+  }, []);
+
+  const availableItems = menuItems.filter(item => item.available);
 
   return (
     <section className="py-12 px-6">
@@ -24,17 +48,27 @@ const DailyMenu = () => {
           </div>
           <p className="text-primary-foreground/70 text-sm mb-6">{today}</p>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {todayItems.map((item) => (
-              <div
-                key={item.name}
-                className="flex items-center gap-3 bg-primary-foreground/10 rounded-lg p-4 backdrop-blur-sm"
-              >
-                <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
-                <span className="font-medium">{item.name}</span>
-              </div>
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="text-center py-8">
+              <p className="text-primary-foreground/70">Loading menu...</p>
+            </div>
+          ) : availableItems.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-primary-foreground/70">No items available today</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {availableItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex items-center gap-3 bg-primary-foreground/10 rounded-lg p-4 backdrop-blur-sm"
+                >
+                  <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
+                  <span className="font-medium">{item.name}</span>
+                </div>
+              ))}
+            </div>
+          )}
           
           <p className="text-primary-foreground/60 text-xs mt-4 text-center">
             Staff updates this section each morning
