@@ -11,15 +11,15 @@ const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { signIn, user, isAdmin, loading } = useAuth();
+  const { signIn, user, canEditMenu, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
-    if (!loading && user && isAdmin) {
+    if (!loading && user && canEditMenu) {
       navigate('/admin');
     }
-  }, [user, isAdmin, loading, navigate]);
+  }, [user, canEditMenu, loading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

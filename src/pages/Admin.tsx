@@ -20,7 +20,7 @@ const Admin = () => {
   const [newItemName, setNewItemName] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const { user, isAdmin, loading, signOut } = useAuth();
+  const { user, canEditMenu, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -28,22 +28,22 @@ const Admin = () => {
     if (!loading) {
       if (!user) {
         navigate('/admin/login');
-      } else if (!isAdmin) {
+      } else if (!canEditMenu) {
         toast({
           title: 'Access Denied',
-          description: 'You do not have admin privileges.',
+          description: 'You do not have permission to edit the menu.',
           variant: 'destructive',
         });
         navigate('/');
       }
     }
-  }, [user, isAdmin, loading, navigate, toast]);
+  }, [user, canEditMenu, loading, navigate, toast]);
 
   useEffect(() => {
-    if (user && isAdmin) {
+    if (user && canEditMenu) {
       fetchMenuItems();
     }
-  }, [user, isAdmin]);
+  }, [user, canEditMenu]);
 
   const fetchMenuItems = async () => {
     const { data, error } = await supabase
@@ -148,7 +148,7 @@ const Admin = () => {
     );
   }
 
-  if (!user || !isAdmin) {
+  if (!user || !canEditMenu) {
     return null;
   }
 
