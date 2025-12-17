@@ -8,8 +8,23 @@ import { useToast } from '@/hooks/use-toast';
 import { UserPlus } from 'lucide-react';
 import { z } from 'zod';
 
+const ALLOWED_EMAILS = [
+  'clope063@mater.colegia.org',
+  'nlove001@mater.colegia.org',
+  'mveit001@mater.colegia.org',
+  'tdiaz006@mater.colegia.org',
+  'cagui026@mater.colegia.org',
+  'mavil017@mater.colegia.org',
+  'lkirb004@mater.colegia.org',
+  'drold001@mater.colegia.org',
+];
+
 const signupSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
+  email: z.string()
+    .email("Please enter a valid email address")
+    .refine((email) => ALLOWED_EMAILS.includes(email.toLowerCase()), {
+      message: "This email is not authorized for signup. Contact administration for access."
+    }),
   password: z.string().min(6, "Password must be at least 6 characters"),
   confirmPassword: z.string()
 }).refine((data) => data.password === data.confirmPassword, {
