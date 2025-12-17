@@ -6,12 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { LogOut, Plus, Trash2, GripVertical, Save, Home } from 'lucide-react';
+import { LogOut, Plus, X, Home, Check, Package } from 'lucide-react';
 
 interface MenuItem {
   id: string;
   name: string;
   available: boolean;
+  on_daily_menu: boolean;
   display_order: number;
 }
 
@@ -64,6 +65,27 @@ const Admin = () => {
     setIsLoading(false);
   };
 
+  const toggleOnDailyMenu = async (id: string, currentValue: boolean) => {
+    const { error } = await supabase
+      .from('daily_menu_items')
+      .update({ on_daily_menu: !currentValue, available: !currentValue ? true : false })
+      .eq('id', id);
+
+    if (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to update item.',
+        variant: 'destructive',
+      });
+    } else {
+      setMenuItems(items =>
+        items.map(item =>
+          item.id === id ? { ...item, on_daily_menu: !currentValue, available: !currentValue ? true : false } : item
+        )
+      );
+    }
+  };
+
   const toggleAvailability = async (id: string, currentValue: boolean) => {
     const { error } = await supabase
       .from('daily_menu_items')
@@ -73,7 +95,7 @@ const Admin = () => {
     if (error) {
       toast({
         title: 'Error',
-        description: 'Failed to update item.',
+        description: 'Failed to update stock status.',
         variant: 'destructive',
       });
     } else {
@@ -93,7 +115,7 @@ const Admin = () => {
 
     const { data, error } = await supabase
       .from('daily_menu_items')
-      .insert({ name: newItemName.trim(), available: true, display_order: maxOrder + 1 })
+      .insert({ name: newItemName.trim(), available: false, on_daily_menu: false, display_order: maxOrder + 1 })
       .select()
       .single();
 
@@ -108,29 +130,33 @@ const Admin = () => {
       setNewItemName('');
       toast({
         title: 'Item Added',
-        description: `${data.name} has been added to the menu.`,
+        description: `${data.name} has been added to the master list.`,
       });
     }
     setIsSaving(false);
   };
 
-  const deleteMenuItem = async (id: string, name: string) => {
+  const removeFromDailyMenu = async (id: string, name: string) => {
     const { error } = await supabase
       .from('daily_menu_items')
-      .delete()
+      .update({ on_daily_menu: false, available: false })
       .eq('id', id);
 
     if (error) {
       toast({
         title: 'Error',
-        description: 'Failed to delete item.',
+        description: 'Failed to remove item from daily menu.',
         variant: 'destructive',
       });
     } else {
-      setMenuItems(items => items.filter(item => item.id !== id));
+      setMenuItems(items =>
+        items.map(item =>
+          item.id === id ? { ...item, on_daily_menu: false, available: false } : item
+        )
+      );
       toast({
-        title: 'Item Deleted',
-        description: `${name} has been removed.`,
+        title: 'Removed from Daily Menu',
+        description: `${name} has been removed from today's menu.`,
       });
     }
   };
@@ -158,6 +184,9 @@ const Admin = () => {
     day: 'numeric'
   });
 
+  const dailyMenuItems = menuItems.filter(item => item.on_daily_menu);
+  const availableToAdd = menuItems.filter(item => !item.on_daily_menu);
+
   return (
     <div className="min-h-screen bg-background">
       <header className="bg-primary text-primary-foreground py-4 px-6">
@@ -179,60 +208,94 @@ const Admin = () => {
         </div>
       </header>
 
-      <main className="container max-w-4xl mx-auto py-8 px-6">
-        <div className="bg-card rounded-xl p-6 shadow-sm border border-border mb-6">
-          <h2 className="text-lg font-semibold text-primary mb-4">Today's Available Items</h2>
+      <main className="container max-w-4xl mx-auto py-8 px-6 space-y-6">
+        {/* Today's Daily Menu */}
+        <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
+          <h2 className="text-lg font-semibold text-primary mb-2">Today's Daily Menu</h2>
           <p className="text-muted-foreground text-sm mb-6">
-            Toggle items on or off to update what students see on the menu.
+            These items are shown on today's menu. Toggle stock status or remove items.
           </p>
 
-          <div className="space-y-3">
-            {menuItems.map((item) => (
-              <div
-                key={item.id}
-                className="flex items-center justify-between bg-muted/30 rounded-lg p-4 border border-border"
-              >
-                <div className="flex items-center gap-3">
-                  <GripVertical className="w-4 h-4 text-muted-foreground" />
+          {dailyMenuItems.length === 0 ? (
+            <p className="text-muted-foreground text-center py-8">
+              No items on today's menu. Add items from the list below.
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {dailyMenuItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between bg-muted/30 rounded-lg p-4 border border-border"
+                >
                   <span className="font-medium text-foreground">{item.name}</span>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <span className={`text-sm ${item.available ? 'text-green-600' : 'text-muted-foreground'}`}>
-                      {item.available ? 'Available' : 'Unavailable'}
-                    </span>
-                    <Switch
-                      checked={item.available}
-                      onCheckedChange={() => toggleAvailability(item.id, item.available)}
-                    />
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
+                      <Package className="w-4 h-4 text-muted-foreground" />
+                      <span className={`text-sm ${item.available ? 'text-green-600' : 'text-destructive'}`}>
+                        {item.available ? 'In Stock' : 'Out of Stock'}
+                      </span>
+                      <Switch
+                        checked={item.available}
+                        onCheckedChange={() => toggleAvailability(item.id, item.available)}
+                      />
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeFromDailyMenu(item.id, item.name)}
+                      className="text-destructive hover:text-destructive"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => deleteMenuItem(item.id, item.name)}
-                    className="text-destructive hover:text-destructive"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
+        {/* Master List - Add to Daily Menu */}
         <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
-          <h2 className="text-lg font-semibold text-primary mb-4">Add New Item</h2>
-          <div className="flex gap-3">
-            <Input
-              value={newItemName}
-              onChange={(e) => setNewItemName(e.target.value)}
-              placeholder="Enter item name..."
-              onKeyDown={(e) => e.key === 'Enter' && addMenuItem()}
-            />
-            <Button onClick={addMenuItem} disabled={isSaving || !newItemName.trim()}>
-              <Plus className="w-4 h-4 mr-1" />
-              Add
-            </Button>
+          <h2 className="text-lg font-semibold text-primary mb-2">All Menu Items</h2>
+          <p className="text-muted-foreground text-sm mb-6">
+            Click an item to add it to today's daily menu.
+          </p>
+
+          {availableToAdd.length === 0 ? (
+            <p className="text-muted-foreground text-center py-4">
+              All items are on today's menu!
+            </p>
+          ) : (
+            <div className="flex flex-wrap gap-2 mb-6">
+              {availableToAdd.map((item) => (
+                <Button
+                  key={item.id}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => toggleOnDailyMenu(item.id, item.on_daily_menu)}
+                  className="flex items-center gap-1"
+                >
+                  <Plus className="w-3 h-3" />
+                  {item.name}
+                </Button>
+              ))}
+            </div>
+          )}
+
+          <div className="border-t border-border pt-6">
+            <h3 className="text-sm font-medium text-foreground mb-3">Add New Item to Master List</h3>
+            <div className="flex gap-3">
+              <Input
+                value={newItemName}
+                onChange={(e) => setNewItemName(e.target.value)}
+                placeholder="Enter item name..."
+                onKeyDown={(e) => e.key === 'Enter' && addMenuItem()}
+              />
+              <Button onClick={addMenuItem} disabled={isSaving || !newItemName.trim()}>
+                <Plus className="w-4 h-4 mr-1" />
+                Add
+              </Button>
+            </div>
           </div>
         </div>
       </main>
