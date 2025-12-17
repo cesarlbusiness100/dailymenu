@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -94,8 +94,11 @@ const AdminLogin = () => {
             </Button>
           </form>
 
-          <p className="text-xs text-muted-foreground text-center mt-6">
-            Contact administration if you need access
+          <p className="text-sm text-muted-foreground text-center mt-6">
+            Don't have an account?{' '}
+            <Link to="/admin/signup" className="text-primary hover:underline">
+              Sign up
+            </Link>
           </p>
         </div>
       </div>
