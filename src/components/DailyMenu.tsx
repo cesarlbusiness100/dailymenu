@@ -6,6 +6,7 @@ interface MenuItem {
   id: string;
   name: string;
   available: boolean;
+  on_daily_menu: boolean;
 }
 
 const DailyMenu = () => {
@@ -22,7 +23,8 @@ const DailyMenu = () => {
     const fetchMenuItems = async () => {
       const { data, error } = await supabase
         .from('daily_menu_items')
-        .select('id, name, available')
+        .select('id, name, available, on_daily_menu')
+        .eq('on_daily_menu', true)
         .order('display_order', { ascending: true });
 
       if (error) {
@@ -36,7 +38,8 @@ const DailyMenu = () => {
     fetchMenuItems();
   }, []);
 
-  const availableItems = menuItems.filter(item => item.available);
+  const inStockItems = menuItems.filter(item => item.available);
+  const outOfStockItems = menuItems.filter(item => !item.available);
 
   return (
     <section className="py-12 px-6">
@@ -52,21 +55,39 @@ const DailyMenu = () => {
             <div className="text-center py-8">
               <p className="text-primary-foreground/70">Loading menu...</p>
             </div>
-          ) : availableItems.length === 0 ? (
+          ) : menuItems.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-primary-foreground/70">No items available today</p>
+              <p className="text-primary-foreground/70">No items on today's menu</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {availableItems.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex items-center gap-3 bg-primary-foreground/10 rounded-lg p-4 backdrop-blur-sm"
-                >
-                  <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
-                  <span className="font-medium">{item.name}</span>
+            <div className="space-y-4">
+              {inStockItems.length > 0 && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {inStockItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center gap-3 bg-primary-foreground/10 rounded-lg p-4 backdrop-blur-sm"
+                    >
+                      <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
+                      <span className="font-medium">{item.name}</span>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
+              {outOfStockItems.length > 0 && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {outOfStockItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center gap-3 bg-primary-foreground/5 rounded-lg p-4 backdrop-blur-sm opacity-60"
+                    >
+                      <XCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
+                      <span className="font-medium line-through">{item.name}</span>
+                      <span className="text-xs text-primary-foreground/60 ml-auto">Out of stock</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
           
