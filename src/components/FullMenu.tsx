@@ -41,7 +41,7 @@ const menuItems = [
 
 const FullMenu = () => {
   return (
-    <section className="py-12 px-6 bg-secondary">
+    <section id="full-menu" className="py-12 px-6 bg-secondary">
       <div className="container max-w-5xl mx-auto">
         <div className="flex items-center gap-2 mb-6">
           <UtensilsCrossed className="w-5 h-5 text-accent" />
