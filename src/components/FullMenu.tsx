@@ -35,7 +35,7 @@ const menuItems = [
   },
   {
     name: "Fireman Derek's Cake Cups",
-    description: "Premium ice cream cups — chocolate or birthday cake flavors",
+    description: "Premium cake cups — chocolate or birthday cake flavors",
   },
 ];
 
