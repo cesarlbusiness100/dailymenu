@@ -17,6 +17,7 @@ const ALLOWED_EMAILS = [
   'mavil017@mater.colegia.org',
   'lkirb004@mater.colegia.org',
   'drold001@mater.colegia.org',
+  'yalvarez@materbrickell.com',
 ];
 
 const signupSchema = z.object({
