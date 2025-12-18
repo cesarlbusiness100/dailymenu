@@ -322,20 +322,7 @@ const Admin = () => {
           <TabsContent value="menu" className="space-y-6">
             {/* Today's Daily Menu */}
             <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
-              <div className="flex items-center justify-between mb-2">
-                <h2 className="text-lg font-semibold text-primary">Today's Daily Menu</h2>
-                {dailyMenuItems.length > 0 && (
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={markAsClosed}
-                    className="gap-2"
-                  >
-                    <DoorClosed className="w-4 h-4" />
-                    We Are Closed
-                  </Button>
-                )}
-              </div>
+              <h2 className="text-lg font-semibold text-primary mb-2">Today's Daily Menu</h2>
               <p className="text-muted-foreground text-sm mb-6">
                 These items are shown on today's menu. Toggle stock status or remove items.
               </p>
@@ -380,7 +367,19 @@ const Admin = () => {
 
             {/* Master List - Add to Daily Menu */}
             <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
-              <h2 className="text-lg font-semibold text-primary mb-2">All Menu Items</h2>
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-lg font-semibold text-primary">All Menu Items</h2>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={markAsClosed}
+                  disabled={dailyMenuItems.length === 0}
+                  className="gap-2"
+                >
+                  <DoorClosed className="w-4 h-4" />
+                  We Are Closed
+                </Button>
+              </div>
               <p className="text-muted-foreground text-sm mb-6">
                 Click an item to add it to today's daily menu.
               </p>
