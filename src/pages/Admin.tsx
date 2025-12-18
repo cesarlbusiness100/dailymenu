@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { LogOut, Plus, X, Home, Check, Package } from 'lucide-react';
+import { LogOut, Plus, X, Home, Package, MessageSquare, UtensilsCrossed, Trash2 } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface MenuItem {
   id: string;
@@ -16,8 +17,17 @@ interface MenuItem {
   display_order: number;
 }
 
+interface FeedbackRequest {
+  id: string;
+  name: string | null;
+  message: string;
+  created_at: string;
+  is_read: boolean;
+}
+
 const Admin = () => {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [feedbackRequests, setFeedbackRequests] = useState<FeedbackRequest[]>([]);
   const [newItemName, setNewItemName] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -43,6 +53,7 @@ const Admin = () => {
   useEffect(() => {
     if (user && canEditMenu) {
       fetchMenuItems();
+      fetchFeedbackRequests();
     }
   }, [user, canEditMenu]);
 
@@ -63,6 +74,19 @@ const Admin = () => {
       setMenuItems(data || []);
     }
     setIsLoading(false);
+  };
+
+  const fetchFeedbackRequests = async () => {
+    const { data, error } = await supabase
+      .from('feedback_requests')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching feedback:', error);
+    } else {
+      setFeedbackRequests(data || []);
+    }
   };
 
   const toggleOnDailyMenu = async (id: string, currentValue: boolean) => {
@@ -161,6 +185,48 @@ const Admin = () => {
     }
   };
 
+  const markFeedbackAsRead = async (id: string, currentValue: boolean) => {
+    const { error } = await supabase
+      .from('feedback_requests')
+      .update({ is_read: !currentValue })
+      .eq('id', id);
+
+    if (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to update feedback.',
+        variant: 'destructive',
+      });
+    } else {
+      setFeedbackRequests(items =>
+        items.map(item =>
+          item.id === id ? { ...item, is_read: !currentValue } : item
+        )
+      );
+    }
+  };
+
+  const deleteFeedback = async (id: string) => {
+    const { error } = await supabase
+      .from('feedback_requests')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to delete feedback.',
+        variant: 'destructive',
+      });
+    } else {
+      setFeedbackRequests(items => items.filter(item => item.id !== id));
+      toast({
+        title: 'Deleted',
+        description: 'Feedback has been deleted.',
+      });
+    }
+  };
+
   const handleSignOut = async () => {
     await signOut();
     navigate('/admin/login');
@@ -186,13 +252,14 @@ const Admin = () => {
 
   const dailyMenuItems = menuItems.filter(item => item.on_daily_menu);
   const availableToAdd = menuItems.filter(item => !item.on_daily_menu);
+  const unreadCount = feedbackRequests.filter(f => !f.is_read).length;
 
   return (
     <div className="min-h-screen bg-background">
       <header className="bg-primary text-primary-foreground py-4 px-6">
         <div className="container max-w-4xl mx-auto flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-semibold">Daily Menu Manager</h1>
+            <h1 className="text-xl font-semibold">Admin Dashboard</h1>
             <p className="text-primary-foreground/70 text-sm">{today}</p>
           </div>
           <div className="flex items-center gap-2">
@@ -208,96 +275,180 @@ const Admin = () => {
         </div>
       </header>
 
-      <main className="container max-w-4xl mx-auto py-8 px-6 space-y-6">
-        {/* Today's Daily Menu */}
-        <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
-          <h2 className="text-lg font-semibold text-primary mb-2">Today's Daily Menu</h2>
-          <p className="text-muted-foreground text-sm mb-6">
-            These items are shown on today's menu. Toggle stock status or remove items.
-          </p>
+      <main className="container max-w-4xl mx-auto py-8 px-6">
+        <Tabs defaultValue="menu" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="menu" className="flex items-center gap-2">
+              <UtensilsCrossed className="w-4 h-4" />
+              Daily Menu
+            </TabsTrigger>
+            <TabsTrigger value="feedback" className="flex items-center gap-2">
+              <MessageSquare className="w-4 h-4" />
+              Feedback
+              {unreadCount > 0 && (
+                <span className="bg-destructive text-destructive-foreground text-xs rounded-full px-2 py-0.5">
+                  {unreadCount}
+                </span>
+              )}
+            </TabsTrigger>
+          </TabsList>
 
-          {dailyMenuItems.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">
-              No items on today's menu. Add items from the list below.
-            </p>
-          ) : (
-            <div className="space-y-3">
-              {dailyMenuItems.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex items-center justify-between bg-muted/30 rounded-lg p-4 border border-border"
-                >
-                  <span className="font-medium text-foreground">{item.name}</span>
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2">
-                      <Package className="w-4 h-4 text-muted-foreground" />
-                      <span className={`text-sm ${item.available ? 'text-green-600' : 'text-destructive'}`}>
-                        {item.available ? 'In Stock' : 'Out of Stock'}
-                      </span>
-                      <Switch
-                        checked={item.available}
-                        onCheckedChange={() => toggleAvailability(item.id, item.available)}
-                      />
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removeFromDailyMenu(item.id, item.name)}
-                      className="text-destructive hover:text-destructive"
+          <TabsContent value="menu" className="space-y-6">
+            {/* Today's Daily Menu */}
+            <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
+              <h2 className="text-lg font-semibold text-primary mb-2">Today's Daily Menu</h2>
+              <p className="text-muted-foreground text-sm mb-6">
+                These items are shown on today's menu. Toggle stock status or remove items.
+              </p>
+
+              {dailyMenuItems.length === 0 ? (
+                <p className="text-muted-foreground text-center py-8">
+                  No items on today's menu. Add items from the list below.
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {dailyMenuItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center justify-between bg-muted/30 rounded-lg p-4 border border-border"
                     >
-                      <X className="w-4 h-4" />
-                    </Button>
-                  </div>
+                      <span className="font-medium text-foreground">{item.name}</span>
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-2">
+                          <Package className="w-4 h-4 text-muted-foreground" />
+                          <span className={`text-sm ${item.available ? 'text-green-600' : 'text-destructive'}`}>
+                            {item.available ? 'In Stock' : 'Out of Stock'}
+                          </span>
+                          <Switch
+                            checked={item.available}
+                            onCheckedChange={() => toggleAvailability(item.id, item.available)}
+                          />
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeFromDailyMenu(item.id, item.name)}
+                          className="text-destructive hover:text-destructive"
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
-          )}
-        </div>
 
-        {/* Master List - Add to Daily Menu */}
-        <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
-          <h2 className="text-lg font-semibold text-primary mb-2">All Menu Items</h2>
-          <p className="text-muted-foreground text-sm mb-6">
-            Click an item to add it to today's daily menu.
-          </p>
+            {/* Master List - Add to Daily Menu */}
+            <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
+              <h2 className="text-lg font-semibold text-primary mb-2">All Menu Items</h2>
+              <p className="text-muted-foreground text-sm mb-6">
+                Click an item to add it to today's daily menu.
+              </p>
 
-          {availableToAdd.length === 0 ? (
-            <p className="text-muted-foreground text-center py-4">
-              All items are on today's menu!
-            </p>
-          ) : (
-            <div className="flex flex-wrap gap-2 mb-6">
-              {availableToAdd.map((item) => (
-                <Button
-                  key={item.id}
-                  variant="outline"
-                  size="sm"
-                  onClick={() => toggleOnDailyMenu(item.id, item.on_daily_menu)}
-                  className="flex items-center gap-1"
-                >
-                  <Plus className="w-3 h-3" />
-                  {item.name}
-                </Button>
-              ))}
+              {availableToAdd.length === 0 ? (
+                <p className="text-muted-foreground text-center py-4">
+                  All items are on today's menu!
+                </p>
+              ) : (
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {availableToAdd.map((item) => (
+                    <Button
+                      key={item.id}
+                      variant="outline"
+                      size="sm"
+                      onClick={() => toggleOnDailyMenu(item.id, item.on_daily_menu)}
+                      className="flex items-center gap-1"
+                    >
+                      <Plus className="w-3 h-3" />
+                      {item.name}
+                    </Button>
+                  ))}
+                </div>
+              )}
+
+              <div className="border-t border-border pt-6">
+                <h3 className="text-sm font-medium text-foreground mb-3">Add New Item to Master List</h3>
+                <div className="flex gap-3">
+                  <Input
+                    value={newItemName}
+                    onChange={(e) => setNewItemName(e.target.value)}
+                    placeholder="Enter item name..."
+                    onKeyDown={(e) => e.key === 'Enter' && addMenuItem()}
+                  />
+                  <Button onClick={addMenuItem} disabled={isSaving || !newItemName.trim()}>
+                    <Plus className="w-4 h-4 mr-1" />
+                    Add
+                  </Button>
+                </div>
+              </div>
             </div>
-          )}
+          </TabsContent>
 
-          <div className="border-t border-border pt-6">
-            <h3 className="text-sm font-medium text-foreground mb-3">Add New Item to Master List</h3>
-            <div className="flex gap-3">
-              <Input
-                value={newItemName}
-                onChange={(e) => setNewItemName(e.target.value)}
-                placeholder="Enter item name..."
-                onKeyDown={(e) => e.key === 'Enter' && addMenuItem()}
-              />
-              <Button onClick={addMenuItem} disabled={isSaving || !newItemName.trim()}>
-                <Plus className="w-4 h-4 mr-1" />
-                Add
-              </Button>
+          <TabsContent value="feedback" className="space-y-6">
+            <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
+              <h2 className="text-lg font-semibold text-primary mb-2">Feedback & Requests</h2>
+              <p className="text-muted-foreground text-sm mb-6">
+                View and manage feedback submitted by customers.
+              </p>
+
+              {feedbackRequests.length === 0 ? (
+                <p className="text-muted-foreground text-center py-8">
+                  No feedback received yet.
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {feedbackRequests.map((feedback) => (
+                    <div
+                      key={feedback.id}
+                      className={`rounded-lg p-4 border ${
+                        feedback.is_read 
+                          ? 'bg-muted/20 border-border' 
+                          : 'bg-accent/10 border-accent/30'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="font-medium text-foreground">
+                              {feedback.name || 'Anonymous'}
+                            </span>
+                            {!feedback.is_read && (
+                              <span className="bg-accent text-accent-foreground text-xs rounded px-2 py-0.5">
+                                New
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-2">
+                            {new Date(feedback.created_at).toLocaleString()}
+                          </p>
+                          <p className="text-foreground whitespace-pre-wrap">{feedback.message}</p>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => markFeedbackAsRead(feedback.id, feedback.is_read)}
+                          >
+                            {feedback.is_read ? 'Mark Unread' : 'Mark Read'}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => deleteFeedback(feedback.id)}
+                            className="text-destructive hover:text-destructive"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
-        </div>
+          </TabsContent>
+        </Tabs>
       </main>
     </div>
   );
