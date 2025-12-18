@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { LogOut, Plus, X, Home, Package, MessageSquare, UtensilsCrossed, Trash2 } from 'lucide-react';
+import { LogOut, Plus, X, Home, Package, MessageSquare, UtensilsCrossed, Trash2, DoorClosed } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface MenuItem {
@@ -185,6 +185,32 @@ const Admin = () => {
     }
   };
 
+  const markAsClosed = async () => {
+    const dailyItems = menuItems.filter(item => item.on_daily_menu);
+    if (dailyItems.length === 0) return;
+
+    const { error } = await supabase
+      .from('daily_menu_items')
+      .update({ on_daily_menu: false, available: false })
+      .in('id', dailyItems.map(item => item.id));
+
+    if (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to close the menu.',
+        variant: 'destructive',
+      });
+    } else {
+      setMenuItems(items =>
+        items.map(item => ({ ...item, on_daily_menu: false, available: false }))
+      );
+      toast({
+        title: 'Closed',
+        description: 'All items removed from today\'s menu. Customers will see "We are closed".',
+      });
+    }
+  };
+
   const markFeedbackAsRead = async (id: string, currentValue: boolean) => {
     const { error } = await supabase
       .from('feedback_requests')
@@ -296,7 +322,20 @@ const Admin = () => {
           <TabsContent value="menu" className="space-y-6">
             {/* Today's Daily Menu */}
             <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
-              <h2 className="text-lg font-semibold text-primary mb-2">Today's Daily Menu</h2>
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-lg font-semibold text-primary">Today's Daily Menu</h2>
+                {dailyMenuItems.length > 0 && (
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={markAsClosed}
+                    className="gap-2"
+                  >
+                    <DoorClosed className="w-4 h-4" />
+                    We Are Closed
+                  </Button>
+                )}
+              </div>
               <p className="text-muted-foreground text-sm mb-6">
                 These items are shown on today's menu. Toggle stock status or remove items.
               </p>
