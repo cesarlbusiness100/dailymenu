@@ -31,6 +31,7 @@ const Admin = () => {
   const [newItemName, setNewItemName] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isClosed, setIsClosed] = useState(false);
   const { user, canEditMenu, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -54,8 +55,20 @@ const Admin = () => {
     if (user && canEditMenu) {
       fetchMenuItems();
       fetchFeedbackRequests();
+      fetchStoreSettings();
     }
   }, [user, canEditMenu]);
+
+  const fetchStoreSettings = async () => {
+    const { data, error } = await supabase
+      .from('store_settings')
+      .select('is_closed')
+      .maybeSingle();
+
+    if (!error && data) {
+      setIsClosed(data.is_closed);
+    }
+  };
 
   const fetchMenuItems = async () => {
     const { data, error } = await supabase
@@ -185,28 +198,27 @@ const Admin = () => {
     }
   };
 
-  const markAsClosed = async () => {
-    const dailyItems = menuItems.filter(item => item.on_daily_menu);
-    if (dailyItems.length === 0) return;
-
+  const toggleClosed = async () => {
+    const newClosedState = !isClosed;
+    
     const { error } = await supabase
-      .from('daily_menu_items')
-      .update({ on_daily_menu: false, available: false })
-      .in('id', dailyItems.map(item => item.id));
+      .from('store_settings')
+      .update({ is_closed: newClosedState, updated_at: new Date().toISOString() })
+      .neq('id', '00000000-0000-0000-0000-000000000000'); // Update any row
 
     if (error) {
       toast({
         title: 'Error',
-        description: 'Failed to close the menu.',
+        description: 'Failed to update closed status.',
         variant: 'destructive',
       });
     } else {
-      setMenuItems(items =>
-        items.map(item => ({ ...item, on_daily_menu: false, available: false }))
-      );
+      setIsClosed(newClosedState);
       toast({
-        title: 'Closed',
-        description: 'All items removed from today\'s menu. Customers will see "We are closed".',
+        title: newClosedState ? 'Marked as Closed' : 'Reopened',
+        description: newClosedState 
+          ? 'Customers will now see "We are closed" on the homepage.' 
+          : 'The closed message has been removed.',
       });
     }
   };
@@ -370,14 +382,13 @@ const Admin = () => {
               <div className="flex items-center justify-between mb-2">
                 <h2 className="text-lg font-semibold text-primary">All Menu Items</h2>
                 <Button
-                  variant="destructive"
+                  variant={isClosed ? "default" : "destructive"}
                   size="sm"
-                  onClick={markAsClosed}
-                  disabled={dailyMenuItems.length === 0}
+                  onClick={toggleClosed}
                   className="gap-2"
                 >
                   <DoorClosed className="w-4 h-4" />
-                  We Are Closed
+                  {isClosed ? 'Reopen Store' : 'We Are Closed'}
                 </Button>
               </div>
               <p className="text-muted-foreground text-sm mb-6">

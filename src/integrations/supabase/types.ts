@@ -68,6 +68,27 @@ export type Database = {
         }
         Relationships: []
       }
+      store_settings: {
+        Row: {
+          closed_message: string | null
+          id: string
+          is_closed: boolean
+          updated_at: string
+        }
+        Insert: {
+          closed_message?: string | null
+          id?: string
+          is_closed?: boolean
+          updated_at?: string
+        }
+        Update: {
+          closed_message?: string | null
+          id?: string
+          is_closed?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
