@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Calendar, CheckCircle2, XCircle, UtensilsCrossed } from "lucide-react";
+import { Calendar, CheckCircle2, XCircle, UtensilsCrossed, DoorClosed } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 
@@ -13,6 +13,7 @@ interface MenuItem {
 const DailyMenu = () => {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isClosed, setIsClosed] = useState(false);
 
   const today = new Date().toLocaleDateString('en-US', { 
     weekday: 'long', 
@@ -21,7 +22,18 @@ const DailyMenu = () => {
   });
 
   useEffect(() => {
-    const fetchMenuItems = async () => {
+    const fetchData = async () => {
+      // Fetch store settings
+      const { data: settingsData } = await supabase
+        .from('store_settings')
+        .select('is_closed')
+        .maybeSingle();
+
+      if (settingsData) {
+        setIsClosed(settingsData.is_closed);
+      }
+
+      // Fetch menu items
       const { data, error } = await supabase
         .from('daily_menu_items')
         .select('id, name, available, on_daily_menu')
@@ -36,7 +48,7 @@ const DailyMenu = () => {
       setIsLoading(false);
     };
 
-    fetchMenuItems();
+    fetchData();
   }, []);
 
   const inStockItems = menuItems.filter(item => item.available);
@@ -56,9 +68,23 @@ const DailyMenu = () => {
             <div className="text-center py-8">
               <p className="text-primary-foreground/70">Loading menu...</p>
             </div>
+          ) : isClosed ? (
+            <div className="text-center py-8 space-y-4">
+              <DoorClosed className="w-12 h-12 mx-auto text-primary-foreground/60" />
+              <p className="text-primary-foreground text-lg font-medium">We are closed</p>
+              <p className="text-primary-foreground/70 text-sm">Check back during our regular hours</p>
+              <Button 
+                variant="secondary"
+                onClick={() => document.getElementById('full-menu')?.scrollIntoView({ behavior: 'smooth' })}
+                className="gap-2"
+              >
+                <UtensilsCrossed className="w-4 h-4" />
+                View Full Menu
+              </Button>
+            </div>
           ) : menuItems.length === 0 ? (
             <div className="text-center py-8 space-y-4">
-              <p className="text-primary-foreground/70">We are closed</p>
+              <p className="text-primary-foreground/70">No items on today's menu</p>
               <Button 
                 variant="secondary"
                 onClick={() => document.getElementById('full-menu')?.scrollIntoView({ behavior: 'smooth' })}
