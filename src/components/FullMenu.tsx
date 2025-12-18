@@ -34,7 +34,7 @@ const menuItems = [
     description: "Espresso-based beverages — caramel, mocha, or vanilla flavors",
   },
   {
-    name: "Fireman Derek's Ice Cream",
+    name: "Fireman Derek's Cake Cups",
     description: "Premium ice cream cups — chocolate or birthday cake flavors",
   },
 ];
