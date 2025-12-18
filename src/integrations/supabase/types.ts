@@ -44,6 +44,30 @@ export type Database = {
         }
         Relationships: []
       }
+      feedback_requests: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          name: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          name?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          name?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
