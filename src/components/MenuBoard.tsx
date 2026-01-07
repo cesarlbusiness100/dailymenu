@@ -114,11 +114,13 @@ const MenuBoard = () => {
               {/* Header */}
               <header className="flex items-center justify-between mb-6 pb-4 border-b border-navy/10">
                 <div className="flex items-center gap-6">
-                  <img
-                    alt="Food Lab Logo"
-                    className="w-16 h-16 object-contain drop-shadow-sm"
-                    src="/lovable-uploads/b5d8fa67-ae11-4be8-b032-0f4d100425a8.png"
-                  />
+                  <div className="w-16 h-16 rounded-full bg-cream flex items-center justify-center p-1">
+                    <img
+                      alt="Food Lab Logo"
+                      className="w-full h-full object-contain"
+                      src="/lovable-uploads/b5d8fa67-ae11-4be8-b032-0f4d100425a8.png"
+                    />
+                  </div>
                   <div>
                     <h1 className="font-display text-4xl font-bold text-navy tracking-tight">
                       Food Lab
@@ -290,11 +292,13 @@ const MenuBoard = () => {
             <div className="h-full w-full bg-gradient-to-br from-navy via-navy to-primary p-10 flex flex-col items-center justify-center">
               {/* Header */}
               <div className="flex items-center gap-8 mb-10">
-                <img
-                  alt="Food Lab Logo"
-                  className="w-20 h-20 object-contain drop-shadow-lg"
-                  src="/lovable-uploads/b5d8fa67-ae11-4be8-b032-0f4d100425a8.png"
-                />
+                <div className="w-20 h-20 rounded-full bg-cream flex items-center justify-center p-1 shadow-lg">
+                  <img
+                    alt="Food Lab Logo"
+                    className="w-full h-full object-contain"
+                    src="/lovable-uploads/b5d8fa67-ae11-4be8-b032-0f4d100425a8.png"
+                  />
+                </div>
                 <div className="text-center">
                   <h1 className="font-display text-5xl font-bold text-gold tracking-tight">
                     Today's Specials
