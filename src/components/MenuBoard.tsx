@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { CheckCircle2, XCircle, DoorClosed } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import foodLabLogo from "@/assets/food-lab-logo-new.png";
 import {
   Carousel,
   CarouselContent,
@@ -118,7 +119,7 @@ const MenuBoard = () => {
                     <img
                       alt="Food Lab Logo"
                       className="w-full h-full object-contain"
-                      src="/lovable-uploads/b5d8fa67-ae11-4be8-b032-0f4d100425a8.png"
+                      src={foodLabLogo}
                     />
                   </div>
                   <div>
@@ -296,7 +297,7 @@ const MenuBoard = () => {
                   <img
                     alt="Food Lab Logo"
                     className="w-full h-full object-contain"
-                    src="/lovable-uploads/b5d8fa67-ae11-4be8-b032-0f4d100425a8.png"
+                    src={foodLabLogo}
                   />
                 </div>
                 <div className="text-center">
