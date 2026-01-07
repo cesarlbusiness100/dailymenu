@@ -10,39 +10,41 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 220 65% 14%;
+    --foreground: 220 30% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 65% 14%;
+    --card-foreground: 220 30% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 65% 14%;
+    --popover-foreground: 220 30% 12%;
 
-    --primary: 220 65% 14%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 220 40% 16%;
+    --primary-foreground: 45 30% 96%;
 
-    --secondary: 220 20% 96%;
-    --secondary-foreground: 220 65% 14%;
+    --secondary: 45 20% 94%;
+    --secondary-foreground: 220 30% 12%;
 
-    --muted: 220 20% 96%;
+    --muted: 45 15% 92%;
     --muted-foreground: 220 10% 45%;
 
-    --accent: 0 65% 33%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 12 75% 42%;
+    --accent-foreground: 45 30% 98%;
 
-    --destructive: 0 65% 33%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 20% 90%;
-    --input: 220 20% 90%;
-    --ring: 220 65% 14%;
+    --border: 45 20% 88%;
+    --input: 45 20% 88%;
+    --ring: 220 40% 16%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
-    /* Custom tokens */
-    --navy: 220 65% 14%;
-    --red: 0 65% 33%;
-    --cream: 40 30% 97%;
+    /* Custom tokens - Sophisticated palette */
+    --navy: 220 40% 16%;
+    --red: 12 75% 42%;
+    --cream: 45 35% 96%;
+    --gold: 42 80% 55%;
+    --burgundy: 350 65% 35%;
   }
 
   .dark {
