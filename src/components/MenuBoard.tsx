@@ -156,7 +156,7 @@ const MenuBoard = () => {
               <div className="flex-1 grid grid-cols-4 gap-6">
                 
                 {/* Drinks Column */}
-                <div className="bg-gradient-to-b from-burgundy to-accent rounded-lg p-5 text-white shadow-lg shadow-accent/20 flex flex-col">
+                <div className="bg-gradient-to-b from-red to-burgundy rounded-lg p-5 text-white shadow-lg shadow-burgundy/20 flex flex-col">
                   <h3 className="font-display text-2xl font-semibold text-center mb-1 tracking-wide">
                     Drinks
                   </h3>
