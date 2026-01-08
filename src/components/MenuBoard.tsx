@@ -166,7 +166,7 @@ const MenuBoard = () => {
                     {drinksMenu.map(item => <div key={item.name} className="group">
                         <div className="flex justify-between items-baseline">
                           <span className="font-semibold text-sm group-hover:text-gold transition-colors">{item.name}</span>
-                          <span className="text-gold font-bold text-sm">{item.price}</span>
+                          <span className="font-bold text-sm text-primary-foreground">{item.price}</span>
                         </div>
                         <p className="text-white/60 text-xs">{item.description}</p>
                       </div>)}
@@ -175,7 +175,7 @@ const MenuBoard = () => {
                   <div className="mt-4 pt-4 border-t border-white/20">
                     <div className="flex justify-between items-baseline mb-2">
                       <span className="font-display font-semibold">Milkshakes</span>
-                      <span className="text-gold font-bold">$6</span>
+                      <span className="font-bold text-primary-foreground">$6</span>
                     </div>
                     <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-white/80">
                       {milkshakes.map((s, i) => <span key={s.name}>
@@ -207,7 +207,7 @@ const MenuBoard = () => {
 
                   {/* Combos */}
                   <div className="mt-4 bg-gradient-to-br from-navy to-primary rounded-lg p-4 text-white shadow-md">
-                    <h3 className="font-display text-lg font-semibold text-center text-gold mb-3">
+                    <h3 className="font-display text-lg font-semibold text-center mb-3 text-primary-foreground">
                       Combos
                     </h3>
                     <div className="space-y-3">
@@ -216,7 +216,7 @@ const MenuBoard = () => {
                             <span className="font-semibold text-sm">{combo.name}</span>
                             <p className="text-white/60 text-xs">{combo.description}</p>
                           </div>
-                          <span className="font-bold text-gold">{combo.price}</span>
+                          <span className="font-bold text-primary-foreground">{combo.price}</span>
                         </div>)}
                     </div>
                   </div>
