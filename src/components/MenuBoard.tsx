@@ -287,8 +287,8 @@ const MenuBoard = () => {
             <div className="h-full w-full bg-gradient-to-br from-navy via-navy to-primary p-10 flex flex-col items-center justify-center">
               {/* Header */}
               <div className="flex items-center gap-8 mb-10">
-                <div className="w-20 h-20 rounded-full bg-cream flex items-center justify-center p-1 shadow-lg">
-                  <img alt="Food Lab Logo" className="w-full h-full object-contain" src={foodLabLogo} />
+              <div className="w-24 h-24 rounded-full bg-cream flex items-center justify-center overflow-hidden shadow-lg">
+                  <img alt="Food Lab Logo" className="w-[120%] h-[120%] object-cover" src={foodLabLogo} />
                 </div>
                 <div className="text-center">
                   <h1 className="font-display text-5xl font-bold tracking-tight text-primary-foreground">
