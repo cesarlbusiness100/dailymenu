@@ -135,8 +135,8 @@ const MenuBoard = () => {
               {/* Header */}
               <header className="flex items-center justify-between mb-6 pb-4 border-b border-navy/10">
                 <div className="flex items-center gap-6">
-                  <div className="w-16 h-16 rounded-full bg-cream flex items-center justify-center p-1">
-                    <img alt="Food Lab Logo" className="w-full h-full object-contain" src={foodLabLogo} />
+                  <div className="w-20 h-20 rounded-full bg-cream flex items-center justify-center overflow-hidden">
+                    <img alt="Food Lab Logo" className="w-[120%] h-[120%] object-cover" src={foodLabLogo} />
                   </div>
                   <div>
                     <h1 className="font-display text-4xl font-bold text-navy tracking-tight">
