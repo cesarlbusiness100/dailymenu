@@ -53,17 +53,21 @@ const hotSnacks = [{
   price: "$2"
 }];
 const featured = [{
-  name: "McDonald's",
-  description: "Cheeseburger",
-  price: "$5"
+  name: "Fried Rice",
+  description: "From Sushi Sake",
+  price: "$10"
+}, {
+  name: "Chick-Fil-A",
+  description: "8pc Nuggets · Sandwich · Mac & Cheese",
+  price: "$8"
 }, {
   name: "McDonald's",
-  description: "McNuggets 6 Piece",
+  description: "Cheeseburger · McNuggets 6pc · McChicken",
   price: "$5"
 }, {
-  name: "McDonald's",
-  description: "McChicken",
-  price: "$5"
+  name: "Açaí Bowl",
+  description: "Fresh fruit, honey & granola",
+  price: "$7"
 }];
 const combos = [{
   name: "East Combo",
