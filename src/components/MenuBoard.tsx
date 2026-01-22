@@ -41,15 +41,19 @@ const milkshakes = [{
 }];
 const hotSnacks = [{
   name: "Cheese Tequeños",
+  description: "Crispy fried cheese sticks",
   price: "$2"
 }, {
   name: "Beef/Cheese Empanadas",
+  description: "Savory stuffed pastry pockets",
   price: "$3"
 }, {
   name: "Pan De Bono",
+  description: "Colombian cheese bread rolls",
   price: "$2"
 }, {
   name: "Ham Croquetas",
+  description: "Creamy ham-filled bites",
   price: "$2"
 }];
 const featured = [{
@@ -199,12 +203,15 @@ const MenuBoard = () => {
                     <Separator className="text-navy mb-4" />
                     
                     <div className="space-y-4">
-                      {hotSnacks.map(item => <div key={item.name} className="flex justify-between items-center group">
-                          <span className="font-medium text-navy group-hover:text-accent transition-colors">{item.name}</span>
-                          <div className="flex items-center gap-2">
-                            <div className="h-px w-8 bg-navy/20 group-hover:bg-accent/30 transition-colors" />
-                            <span className="font-bold text-accent">{item.price}</span>
+                      {hotSnacks.map(item => <div key={item.name} className="group">
+                          <div className="flex justify-between items-baseline">
+                            <span className="font-medium text-navy group-hover:text-accent transition-colors">{item.name}</span>
+                            <div className="flex items-center gap-2">
+                              <div className="h-px w-8 bg-navy/20 group-hover:bg-accent/30 transition-colors" />
+                              <span className="font-bold text-accent">{item.price}</span>
+                            </div>
                           </div>
+                          <p className="text-navy/50 text-xs">{item.description}</p>
                         </div>)}
                     </div>
                   </div>
