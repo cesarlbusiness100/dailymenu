@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { CheckCircle2, XCircle, DoorClosed } from "lucide-react";
+import { CheckCircle2, XCircle, DoorClosed, Instagram } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import foodLabLogo from "@/assets/food-lab-logo-new.png";
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
@@ -355,6 +355,69 @@ const MenuBoard = () => {
               </div>
 
               <p className="text-white/20 text-sm mt-8">Updated daily by staff</p>
+            </div>
+          </CarouselItem>
+
+          {/* Slide 3: Follow Us on Social Media */}
+          <CarouselItem className="h-screen pl-0">
+            <div className="h-full w-full bg-gradient-to-r from-burgundy via-burgundy to-cream flex">
+              {/* Left side - Phone mockup area */}
+              <div className="flex-1 flex items-center justify-center p-10">
+                <div className="relative">
+                  {/* Phone frame */}
+                  <div className="w-72 h-[580px] bg-navy rounded-[3rem] p-3 shadow-2xl shadow-black/40 border-4 border-navy">
+                    <div className="w-full h-full bg-gradient-to-b from-gray-900 to-gray-800 rounded-[2.5rem] overflow-hidden flex flex-col items-center justify-center">
+                      {/* Instagram mockup content */}
+                      <div className="text-center space-y-4">
+                        <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-pink-500 via-red to-yellow-500 p-1">
+                          <div className="w-full h-full rounded-full bg-cream flex items-center justify-center overflow-hidden">
+                            <img alt="Food Lab Logo" className="w-[120%] h-[120%] object-cover" src={foodLabLogo} />
+                          </div>
+                        </div>
+                        <div className="text-white">
+                          <p className="font-bold text-lg">Business Food Lab</p>
+                          <p className="text-white/60 text-sm">@mbabusinessfoodlab</p>
+                        </div>
+                        <div className="flex justify-center gap-8 text-white text-sm">
+                          <div className="text-center">
+                            <p className="font-bold">26</p>
+                            <p className="text-white/60 text-xs">posts</p>
+                          </div>
+                          <div className="text-center">
+                            <p className="font-bold">315</p>
+                            <p className="text-white/60 text-xs">followers</p>
+                          </div>
+                          <div className="text-center">
+                            <p className="font-bold">12</p>
+                            <p className="text-white/60 text-xs">following</p>
+                          </div>
+                        </div>
+                        <p className="text-white/50 text-xs px-6">
+                          Mater Brickell Academy's official Business Food Lab 🏆✏️
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Notch */}
+                  <div className="absolute top-5 left-1/2 -translate-x-1/2 w-24 h-6 bg-navy rounded-full" />
+                </div>
+              </div>
+
+              {/* Right side - CTA */}
+              <div className="flex-1 bg-cream flex flex-col items-center justify-center p-10">
+                <div className="text-center space-y-8">
+                  <h2 className="font-display text-6xl font-black text-navy leading-tight tracking-tight">
+                    FOLLOW<br />
+                    US ON<br />
+                    SOCIAL<br />
+                    MEDIA
+                  </h2>
+                  <div className="flex items-center justify-center gap-3 text-navy">
+                    <Instagram className="w-8 h-8" />
+                    <span className="text-2xl font-semibold">@mbabusinessfoodlab</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </CarouselItem>
         </CarouselContent>
