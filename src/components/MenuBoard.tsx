@@ -380,7 +380,7 @@ const MenuBoard = () => {
                         </div>
                         <div className="flex justify-center gap-8 text-white text-sm">
                           <div className="text-center">
-                            <p className="font-bold">26</p>
+                            <p className="font-bold">50</p>
                             <p className="text-white/60 text-xs">posts</p>
                           </div>
                           <div className="text-center">
