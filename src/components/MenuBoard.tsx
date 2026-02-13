@@ -86,9 +86,9 @@ const combos = [{
 // Decorative separator component
 const Separator = ({
   className = ""
-}: {
-  className?: string;
-}) => <div className={`flex items-center gap-3 ${className}`}>
+
+
+}: {className?: string;}) => <div className={`flex items-center gap-3 ${className}`}>
     <div className="h-px flex-1 bg-gradient-to-r from-transparent via-current to-transparent opacity-30" />
     <div className="w-1.5 h-1.5 rotate-45 bg-current opacity-40" />
     <div className="h-px flex-1 bg-gradient-to-r from-transparent via-current to-transparent opacity-30" />
@@ -128,8 +128,8 @@ const MenuBoard = () => {
     const autoScroll = setInterval(() => api.scrollNext(), 8000);
     return () => clearInterval(autoScroll);
   }, [api]);
-  const inStockItems = dailyItems.filter(item => item.available);
-  const outOfStockItems = dailyItems.filter(item => !item.available);
+  const inStockItems = dailyItems.filter((item) => item.available);
+  const outOfStockItems = dailyItems.filter((item) => !item.available);
   return <div className="h-screen w-screen bg-gradient-to-br from-cream via-cream to-secondary overflow-hidden">
       <Carousel opts={{
       loop: true,
@@ -171,7 +171,7 @@ const MenuBoard = () => {
                   <Separator className="text-white/50 mb-4" />
                   
                   <div className="space-y-3 flex-1">
-                    {drinksMenu.map(item => <div key={item.name} className="group">
+                    {drinksMenu.map((item) => <div key={item.name} className="group">
                         <div className="flex justify-between items-baseline">
                           <span className="font-semibold text-sm group-hover:text-gold transition-colors">{item.name}</span>
                           <span className="font-bold text-sm text-primary-foreground">{item.price}</span>
@@ -203,7 +203,7 @@ const MenuBoard = () => {
                     <Separator className="text-navy mb-4" />
                     
                     <div className="space-y-4">
-                      {hotSnacks.map(item => <div key={item.name} className="group">
+                      {hotSnacks.map((item) => <div key={item.name} className="group">
                           <div className="flex justify-between items-baseline">
                             <span className="font-medium text-navy group-hover:text-accent transition-colors">{item.name}</span>
                             <div className="flex items-center gap-2">
@@ -222,7 +222,7 @@ const MenuBoard = () => {
                       Combos
                     </h3>
                     <div className="space-y-3">
-                      {combos.map(combo => <div key={combo.name} className="flex justify-between items-start">
+                      {combos.map((combo) => <div key={combo.name} className="flex justify-between items-start">
                           <div>
                             <span className="font-semibold text-sm">{combo.name}</span>
                             <p className="text-white/60 text-xs">{combo.description}</p>
@@ -241,7 +241,7 @@ const MenuBoard = () => {
                   <Separator className="text-navy mb-4" />
                   
                   <div className="space-y-5 flex-1">
-                    {featured.map(item => <div key={item.name} className="group">
+                    {featured.map((item) => <div key={item.name} className="group">
                         <div className="flex justify-between items-baseline">
                           <span className="font-semibold text-navy group-hover:text-accent transition-colors">{item.name}</span>
                           <span className="font-bold text-accent">{item.price}</span>
@@ -267,11 +267,11 @@ const MenuBoard = () => {
                     </div> : dailyItems.length === 0 ? <div className="flex-1 flex items-center justify-center">
                       <p className="text-white/50 text-sm text-center">No specials today<br />Check our regular menu</p>
                     </div> : <div className="space-y-2 flex-1">
-                      {inStockItems.map(item => <div key={item.id} className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-md px-4 py-2.5 border border-white/5">
+                      {inStockItems.map((item) => <div key={item.id} className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-md px-4 py-2.5 border border-white/5">
                           <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                           <span className="font-medium text-sm">{item.name}</span>
                         </div>)}
-                      {outOfStockItems.map(item => <div key={item.id} className="flex items-center gap-3 bg-white/5 rounded-md px-4 py-2 opacity-50">
+                      {outOfStockItems.map((item) => <div key={item.id} className="flex items-center gap-3 bg-white/5 rounded-md px-4 py-2 opacity-50">
                           <XCircle className="w-3 h-3 text-red-400 flex-shrink-0" />
                           <span className="text-xs line-through">{item.name}</span>
                           <span className="text-xs text-white/40 ml-auto">Sold out</span>
@@ -326,7 +326,7 @@ const MenuBoard = () => {
                         <div className="flex-1 h-px bg-emerald-400/20" />
                       </div>
                       <div className="space-y-3">
-                        {inStockItems.map(item => <div key={item.id} className="flex items-center gap-4 bg-white/10 backdrop-blur-sm rounded-lg px-6 py-4 border border-white/5 shadow-lg">
+                        {inStockItems.map((item) => <div key={item.id} className="flex items-center gap-4 bg-white/10 backdrop-blur-sm rounded-lg px-6 py-4 border border-white/5 shadow-lg">
                             <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
                             <span className="font-semibold text-xl text-white">{item.name}</span>
                           </div>)}
@@ -344,7 +344,7 @@ const MenuBoard = () => {
                         <div className="flex-1 h-px bg-red-400/20" />
                       </div>
                       <div className="space-y-3">
-                        {outOfStockItems.map(item => <div key={item.id} className="flex items-center gap-4 bg-white/5 rounded-lg px-6 py-4 opacity-60">
+                        {outOfStockItems.map((item) => <div key={item.id} className="flex items-center gap-4 bg-white/5 rounded-lg px-6 py-4 opacity-60">
                             <XCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
                             <span className="font-medium text-lg text-white/70 line-through">{item.name}</span>
                           </div>)}
@@ -384,7 +384,7 @@ const MenuBoard = () => {
                             <p className="text-white/60 text-xs">posts</p>
                           </div>
                           <div className="text-center">
-                            <p className="font-bold">315</p>
+                            <p className="font-bold">368</p>
                             <p className="text-white/60 text-xs">followers</p>
                           </div>
                           <div className="text-center">
