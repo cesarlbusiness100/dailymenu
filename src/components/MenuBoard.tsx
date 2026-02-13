@@ -388,7 +388,7 @@ const MenuBoard = () => {
                             <p className="text-white/60 text-xs">followers</p>
                           </div>
                           <div className="text-center">
-                            <p className="font-bold">12</p>
+                            <p className="font-bold">6</p>
                             <p className="text-white/60 text-xs">following</p>
                           </div>
                         </div>
